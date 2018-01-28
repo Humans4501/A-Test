@@ -29,15 +29,19 @@ public class RobotMap {
 	public static final int TALON5 = 6;
 	public static final int TALON6 = 7;
 	
+	//SOLENOID
 	public static class SOLENOIDS {
 		public static final int HIGHGEAR = 0;        
 	}
 	
 	public static class SENSORS {
+		
+		//POTENTIOMETER
 		public static final int POTENTIOMETERA = 0;
 		public static final int POTENTIOMETERB = 270;
 		public static final int POTENTIOMETERC = 0;
 		
+		//GYRO
 		public static final int GYRO = 1;
 	}
 
