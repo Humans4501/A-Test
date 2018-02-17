@@ -20,18 +20,27 @@ public class RobotMap {
 	// public static int rangefinderModule = 1;
 	
 	//DRIVETRAIN
-	public static final int TALON1 = 0;
-	public static final int TALON2 = 1;
-	public static final int TALON3 = 2;
-	public static final int TALON4 = 3;
+	public static final int LEFT = 0;
+	public static final int RIGHT = 1;
+
 	
-	//ARM
-	public static final int TALON5 = 6;
-	public static final int TALON6 = 7;
+	//INTAKE
+	public static final int INTAKETALON_1 = 2;
+	public static final int INTAKETALON_2 = 3;
+	
+	//CONVEYOR
+	public static final int CONVEYORTALON_1 = 4;
+	public static final int CONVEYORTALON_2 = 5;
+	
+	//SHOOTER
+	public static final int SHOOTERTALON_1 = 6;
+	public static final int SHOOTERTALON_2 = 7;
+	
 	
 	//SOLENOID
 	public static class SOLENOIDS {
-		public static final int HIGHGEAR = 0;        
+		public static final int HIGHGEAR = 0; 
+		public static final int INTAKESOL = 1;
 	}
 	
 	public static class SENSORS {
@@ -44,7 +53,6 @@ public class RobotMap {
 		//GYRO
 		public static final int GYRO = 1;
 	}
-
 		
 }
 		

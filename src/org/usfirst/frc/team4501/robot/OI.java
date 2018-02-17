@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
-import org.usfirst.frc.team4501.robot.commands.IntakeLeft;
-import org.usfirst.frc.team4501.robot.commands.IntakeRight;
-import org.usfirst.frc.team4501.robot.commands.IntakeStop;
-import org.usfirst.frc.team4501.robot.commands.OuttakeLeft;
-import org.usfirst.frc.team4501.robot.commands.OuttakeRight;
+import org.usfirst.frc.team4501.robot.commands.IntakeClose;
+import org.usfirst.frc.team4501.robot.commands.IntakeGo;
+import org.usfirst.frc.team4501.robot.commands.IntakeOpen;
 import org.usfirst.frc.team4501.robot.commands.ShiftHigh;
 import org.usfirst.frc.team4501.robot.commands.ShiftLow;
+import org.usfirst.frc.team4501.robot.commands.Shoot;
+import org.usfirst.frc.team4501.robot.subsystems.Intake;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -55,11 +55,12 @@ public class OI {
 	Button shiftLow = new JoystickButton(controller, controller.BUTTON_B);
 	Button angles = new JoystickButton(controller, controller.BUTTON_X);
 	
-	//Intake and Outtake stuff
-	Button intakeRight = new JoystickButton(stick, BUTTON_10);
-	Button outtakeRight = new JoystickButton(stick, BUTTON_11);
-	Button intakeLeft = new JoystickButton(stick, BUTTON_7);
-	Button outtakeLeft = new JoystickButton(stick, BUTTON_6);
+	//Shooty Stuff
+	Button shoot = new JoystickButton(stick, TRIGGER);
+	Button intake = new JoystickButton(stick, BUTTON_3);
+	
+	Button intakeOpen = new JoystickButton(stick, BUTTON_4);
+	Button intakeClose = new JoystickButton(stick, BUTTON_5);
 	
 	public OI() {
 		
@@ -67,21 +68,13 @@ public class OI {
 		shiftHigh.whenPressed(new ShiftHigh());
 		shiftLow.whenPressed(new ShiftLow());
 		
-		//Right Arm Intake
-		intakeRight.whenPressed(new IntakeRight());
-		intakeRight.whenReleased(new IntakeStop());
+		//Shooting Stuff
+		shoot.whenPressed(new Shoot());
+		intake.whenPressed(new IntakeGo());
 		
-		//Left Arm Intake
-		intakeLeft.whenPressed(new IntakeLeft());
-		intakeLeft.whenReleased(new IntakeStop());
-		
-		//Right Arm Outtake
-		outtakeRight.whenPressed(new OuttakeRight());
-		outtakeRight.whenReleased(new IntakeStop());
-		
-		//Left Arm Outtake
-		outtakeLeft.whenPressed(new OuttakeLeft());
-		outtakeLeft.whenReleased(new IntakeStop());
+		//Intake Open and Close
+		intakeOpen.whenPressed(new IntakeOpen());
+		intakeClose.whenPressed(new IntakeClose());
 		
 		
 	}

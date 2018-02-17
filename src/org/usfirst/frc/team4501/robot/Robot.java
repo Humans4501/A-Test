@@ -2,14 +2,22 @@
 package org.usfirst.frc.team4501.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.usfirst.frc.team4501.robot.subsystems.Arm;
+import org.usfirst.frc.team4501.robot.commands.AutoCenterGroup;
+import org.usfirst.frc.team4501.robot.commands.AutoLeftorRightGroup;
+import org.usfirst.frc.team4501.robot.commands.DriveAutoTimed;
+import org.usfirst.frc.team4501.robot.commands.VisionPID;
+import org.usfirst.frc.team4501.robot.subsystems.Intake;
+import org.usfirst.frc.team4501.robot.subsystems.Shooter;
+import org.usfirst.frc.team4501.robot.subsystems.Conveyor;
 import org.usfirst.frc.team4501.robot.subsystems.Drivetrain;
 
 /**
@@ -20,10 +28,18 @@ import org.usfirst.frc.team4501.robot.subsystems.Drivetrain;
  * directory.
  */
 public class Robot extends IterativeRobot {
+	public static Robot instance;
+	RobotDrive myDrive = new RobotDrive(RobotMap.LEFT, RobotMap.RIGHT);
 
 	public static final Drivetrain driveTrain = new Drivetrain();
-	public static final Arm arm = new Arm();
+	
+	public static final Intake intake = new Intake();
+	public static final Shooter shooter = new Shooter();
+	public static final Conveyor conveyor = new Conveyor();
+	
 	public static OI oi;
+
+	NetworkTable table;
 
 		
 	Command autonomousCommand;
@@ -39,9 +55,19 @@ public class Robot extends IterativeRobot {
 	
 	@Override
 	public void robotInit() {
+		instance = this;
 		oi = new OI();
+		myDrive.setExpiration(0.1);
+		NetworkTable.setIPAddress("10.95.1.55");
+		table = NetworkTable.getTable("limelight");
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
+		
+		chooser.addObject("Test Timed Auto", new DriveAutoTimed(1));
+		chooser.addObject("Test VisionPID", new VisionPID());
+		
+		chooser.addObject("Center", new AutoCenterGroup());
+		chooser.addObject("Left/Right", new AutoLeftorRightGroup());
 	}
 
 	/**
@@ -92,11 +118,23 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		Robot.driveTrain.autonomous();
-		SmartDashboard.putNumber("Potentiometer", Robot.arm.potAngle());
+		
+		//SENSORS
+		SmartDashboard.putNumber("Potentiometer", Robot.intake.potAngle());
 		SmartDashboard.putNumber("Gyro", Robot.driveTrain.gyroData());
-	}
+		
+		//L I M E L I G H T
+		double tx = table.getNumber("tx", 0);
+		double ty = table.getNumber("ty", 0);
+		double targetArea = table.getNumber("ta", 0);
+		double targetSkew = table.getNumber("ts", 0);
+		double targetView = table.getNumber("tv", 0);
 
+		SmartDashboard.putNumber("targetView", targetView);
+		SmartDashboard.putNumber("tx", tx);
+		SmartDashboard.putNumber("ty", ty);
+	}
+	
 	@Override
 	public void teleopInit() {
 		// This makes sure that the autonomous stops running when
@@ -113,8 +151,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("Potentiometer", Robot.arm.potAngle());
+		SmartDashboard.putNumber("Potentiometer", Robot.intake.potAngle());
 		SmartDashboard.putNumber("Gyro", Robot.driveTrain.gyroData());
 	}
 
@@ -124,5 +163,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		LiveWindow.run();
+	}
+	
+	public void setArcadeDrive(double move, double turn) {
+		//TO DO: CHANGE 0 BACK TO TURN SO IT MOVES AND TURNS AT THE SAME TIME
+		myDrive.arcadeDrive(move, turn);
 	}
 }
